@@ -1,0 +1,14 @@
+# VISOR Arm - Python Dependencies
+# Versions will be verified on Raspberry Pi 5.
+
+lerobot
+ultralytics
+opencv-contrib-python
+numpy
+flask
+paho-mqtt
+
+# PLC communication (separate Python environment)
+# pycomm3
+
+# Hailo-8L runtime is installed separately.
