@@ -1,0 +1,1 @@
+MQTT and PLC communication module for the VISOR Arm robotic sorting system. This module documents communication between the Raspberry Pi 5, Mosquitto MQTT broker, and Allen-Bradley CompactLogix 5380 PLC for conveyor control and automated sorting integration.
