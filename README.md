@@ -110,3 +110,26 @@ Type: Capstone Project
 Year: 2026
 Focus: Robotics · Computer Vision · Imitation Learning · Automated Sorting
 This README will be updated as the project is tested and completed.
+
+
+
+## 📚 Project Documentation
+
+Explore the technical documentation for the VISOR Arm capstone project.
+
+| Document | Description |
+|---|---|
+| [Technical Report](docs/VISOR_Arm_Technical_Documentation.pdf) | Project overview, development and testing |
+| [Setup Guide](docs/SETUP_GUIDE.md) | Hardware and software configuration |
+| [System Architecture](docs/SYSTEM_ARCHITECTURE.md) | System components and workflow diagrams |
+| [Project Progress](docs/PROJECT_PROGRESS.md) | Completed work and ongoing development |
+
+### Project Modules
+
+- [Robot Control](robot_control/)
+- [YOLO Object Detection](yolo_detection/)
+- [ACT Imitation Learning](act_policy/)
+- [MQTT and PLC Integration](mqtt_plc/)
+- [Fusion 360 Designs](fusion360_designs/)
+- [Hardware Documentation](hardware/)
+
