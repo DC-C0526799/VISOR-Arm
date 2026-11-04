@@ -1,0 +1,1 @@
+ACT (Action Chunking Transformer) imitation learning for the VISOR Arm project. This module uses demonstrations recorded through the SO-101 leader and follower arms to train robotic pickup and transfer movements for plastic bottles and aluminium cans.
