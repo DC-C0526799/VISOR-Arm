@@ -16,6 +16,15 @@ VISOR Arm automatically identifies and sorts **plastic bottles** and **aluminium
   <img src="images/yolo_detected_aluminium_can.jpg" width="330" alt="YOLO detecting an aluminium can">
 </p>
 
+## Demo video
+
+<p align="center">
+  <a href="https://youtu.be/U8vxkrAfL1I">
+    <img src="https://img.youtube.com/vi/U8vxkrAfL1I/hqdefault.jpg" width="560" alt="Watch the VISOR Arm demo on YouTube">
+  </a>
+  <br><a href="https://youtu.be/U8vxkrAfL1I"><b>▶ Watch the demo on YouTube (0:40)</b></a>
+</p>
+
 ## System overview
 
 ```
