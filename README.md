@@ -1,135 +1,111 @@
 # VISOR Arm — AI-Powered Robotic Sorting System
-Visor Arm is an AI-powered robotic sorting system using the SO-101 robotic arm, Raspberry Pi 5, YOLO object detection, ACT imitation learning, and PLC integration to automatically sort plastic bottles and aluminum cans.
-VISOR Arm
-AI-Powered Robotic Sorting System | Capstone Project 2026
-VISOR Arm is a capstone project exploring automated identification and sorting of plastic bottles and aluminium cans using an SO-101 robotic arm, Raspberry Pi 5, computer vision, and imitation learning.
 
-The system combines YOLO-based object detection with an ACT (Action Chunking Transformer) policy for robotic pickup and predefined arm positions for placement into the appropriate collection bin.
-Project status: Development and integration. The documentation includes successful camera and object-detection tests and an implementation of a continuous sorting controller. A fully validated end-to-end sorting performance result is not documented yet.
+**Capstone Project 2026 · Robotics · Computer Vision · Imitation Learning · Automated Sorting**
 
-Project objectives
-- Identify plastic bottles and aluminium cans using camera-based object detection.
-- Control an SO-101 arm using calibrated motor positions.
-- Use an ACT policy for pickup and transfer toward the sorting area.
-- Place detected objects in their corresponding bins and repeat the cycle.
-- Provide a web dashboard with status information and a normal-stop request.
-System overview
-Camera / Raspberry Pi 5
-          |
-          v
-    YOLO detection
-          |
-          v
-  Classify bottle or can
-          |
-          v
-    ACT robot pickup
-          |
-          v
- Saved pose: correct bin
-          |
-          v
-     Release object
-          |
-          v
- Return to detection pose
-          |
-          +----> Next object
-The documented controller describes the cycle as:
+VISOR Arm automatically identifies and sorts **plastic bottles** and **aluminium cans** using an SO-101 robotic arm, a Raspberry Pi 5, YOLO object detection and an ACT (Action Chunking Transformer) imitation-learning policy. Integration with a PLC-controlled conveyor is being developed.
 
-HOME → DETECTION → YOLO → ACT → CORRECT BIN → RELEASE → DETECTION → REPEAT
+**Project status (November 2026):** The continuous sorting loop runs on the Raspberry Pi with the `VISOR_ACT_20000` ACT model. The gripper overload problem has been solved with a feedback guard, and the system was demonstrated on 13 Nov 2026. PS5-controller teleoperation is also working. Repeatable end-to-end performance figures (success rate, cycle time) haven't been measured yet.
 
-A normal stop requests completion of the current operation and a return to HOME if no motor fault occurs. This is not an emergency stop.
-Hardware
-Component	Role
-SO-101 robotic arm	Object pickup, movement, and placement
-Raspberry Pi 5	Main computing platform and camera interface
-USB camera	Captures images for object detection
-Hailo-8L AI accelerator	Investigated for accelerated inference
-Motor controllers and calibrated joints	Arm position feedback and movement
-Bottle and can collection bins	Separate sorting destinations
+---
 
+## System overview
 
-Software and technologies
-Technology	Purpose
-Python	Robot and application logic
-LeRobot	SO-101 robot integration and ACT workflows
-Ultralytics YOLO	Bottle and can object detection
-ACT policy	Learned robotic pickup and transfer behavior
-OpenCV	Camera access and image processing
-Flask	Browser-based status dashboard and video feed
-Hailo software tools	AI accelerator identification and model inspection
+```
+Camera ──► YOLO detection ──► bottle or can? ──► ACT pickup (with gripper guard)
+                                                      │
+       ◄── return to DETECTION ◄── release ◄── move to correct bin
+```
 
+`HOME → DETECTION → YOLO → ACT → CORRECT BIN → RELEASE → DETECTION → REPEAT`
 
-Development and testing
-1. Robotic arm setup
-The SO-101 arm was assembled and its motors calibrated using the LeRobot SO-101 documentation. Joint feedback was inspected to establish positions used for HOME and DETECTION.
-2. Camera validation
-The USB camera was identified through Linux video-device utilities. OpenCV was used to capture and save a test image at 640 × 480 resolution.
-3. Hailo-8L investigation
-The Raspberry Pi's Hailo-8L device was identified, the Hailo Python interface was tested, and a compatible YOLO model's input/output information was inspected. These checks do not by themselves establish that the project's custom bottle-and-can detector is running on the Hailo accelerator.
-4. Object detection
-The documentation includes example YOLO results showing:
-- Plastic bottle: detection confidence 0.75.
-- Aluminium can: detection confidence 0.89.
-These are individual illustrated test results, not a measured accuracy benchmark.
-5. Automatic sorting controller
-The documented stage3_auto_sort.py implementation coordinates the detection camera, ACT rollout, selection of bottle/can bin poses, object release, and return to the detection position. It also includes joint-position checks, fault handling, and a Flask dashboard.
+A **normal stop** (Ctrl+C or the dashboard STOP button) finishes the current object and returns to HOME if there's no motor fault. It is **not** an emergency stop.
 
-The implementation references stage1_detection.py and stage2_act.py; these dependencies must be included and checked before the controller can be reproduced from this repository.
-Repository organization
-Visor-Arm/
-├── robot_control/       # SO-101 control and sorting scripts
-├── yolo_detection/      # Object-detection code and examples
-├── act_policy/          # ACT integration and training notes
-├── mqtt_plc/            # PLC and MQTT integration (as available)
-├── fusion360_designs/   # Mechanical design files (as available)
-├── hardware/            # Hardware diagrams and assembly notes
-├── docs/                # Technical report, figures, and test notes
-└── README.md
-The directory structure is a proposed organization for the GitHub repository. Not every folder or file is present in the uploaded documentation.
+## Repository structure
 
-Setup and reproducibility
-This repository is being organized from the project development notes. The complete software setup, Python dependencies, robot calibration, ACT model files, and device-specific configuration should be documented and verified before publishing a reproducible installation procedure.
+```
+VISOR-Arm/
+├── yolo_detection/      # Stage 1: camera, YOLO, motor bus, saved poses, Flask dashboard
+├── act_policy/          # Stage 2: ACT pickup + gripper overload guard
+├── robot_control/       # Stage 3: continuous sorting controller
+├── teleoperation/       # PS5 DualSense controller teleoperation + motor diagnostics
+├── docs/                # Technical report, gripper overload write-up
+├── mqtt_plc/            # MQTT / PLC conveyor integration (in progress)
+├── fusion360_designs/   # CAD: curved gripper jaw, Pi 5 enclosure (to be added)
+├── hardware/            # Hardware notes
+├── images/              # Photos and demo media (to be added)
+├── SETUP_GUIDE.md
+├── SYSTEM_ARCHITECTURE.md
+├── PROJECT_PROGRESS.md
+└── requirements.txt
+```
 
-Useful upstream reference: LeRobot SO-101 documentation.
-Current limitations and next steps
-- Validate the full bottle/can sorting cycle and record repeatable test results.
-- Document ACT model training, dataset, and inference configuration.
-- Measure detection-to-pickup latency and sorting cycle time.
-- Confirm whether inference uses the Hailo accelerator or the Raspberry Pi CPU.
-- Add clear system photographs, mechanical designs, wiring diagrams, and demonstration media.
-- Document PLC/MQTT integration separately once tested and ready to publish.
-Safety and responsible use
-Operate the robot in a clear workspace and supervise movement during testing. The dashboard's normal stop is a software request, not a safety-rated emergency-stop mechanism. Verify robot calibration and paths before enabling automatic motion.
-Documentation
-This README is based on the team's “VISOR arm steps documentation” development notes (59 pages), including assembly photographs, camera setup, detection screenshots, and a draft continuous-sorting Python implementation.
-Project information
-Project: VISOR Arm
-Type: Capstone Project
-Year: 2026
-Focus: Robotics · Computer Vision · Imitation Learning · Automated Sorting
-This README will be updated as the project is tested and completed.
+## Modules
 
+| Module | What it does |
+|---|---|
+| [YOLO Object Detection](yolo_detection/) | Detects bottles and cans, confirms the object over 10 stable frames, and serves the dashboard |
+| [ACT Imitation Learning](act_policy/) | Runs the learned pickup through LeRobot with the gripper overload guard |
+| [Robot Control](robot_control/) | Continuous sorting loop combining saved poses and ACT, with safety checks |
+| [PS5 Teleoperation](teleoperation/) | Drives the arm live with a PS5 DualSense controller |
+| [MQTT and PLC Integration](mqtt_plc/) | Raspberry Pi ↔ Mosquitto ↔ CompactLogix 5380 conveyor link |
+| [Fusion 360 Designs](fusion360_designs/) | Gripper modification and enclosure CAD |
+| [Hardware](hardware/) | Components and connections |
 
-
-## 📚 Project Documentation
-
-Explore the technical documentation for the VISOR Arm capstone project.
+## Documentation
 
 | Document | Description |
 |---|---|
-| [Technical Report](docs/VISOR_Arm_Technical_Documentation.pdf) | Project overview, development and testing |
-| [Setup Guide](docs/SETUP_GUIDE.md) | Hardware and software configuration |
-| [System Architecture](docs/SYSTEM_ARCHITECTURE.md) | System components and workflow diagrams |
-| [Project Progress](docs/PROJECT_PROGRESS.md) | Completed work and ongoing development |
+| [Technical Report (PDF)](docs/VISOR_Arm_Technical_Documentation.pdf) | Project overview, development and testing |
+| [Gripper Overload Fix](docs/GRIPPER_OVERLOAD_FIX.md) | How the gripper overload error was diagnosed and solved |
+| [Setup Guide](SETUP_GUIDE.md) | Hardware and software configuration |
+| [System Architecture](SYSTEM_ARCHITECTURE.md) | Components and workflow diagrams |
+| [Project Progress](PROJECT_PROGRESS.md) | Completed work and next steps |
 
-### Project Modules
+## Hardware
 
-- [Robot Control](robot_control/)
-- [YOLO Object Detection](yolo_detection/)
-- [ACT Imitation Learning](act_policy/)
-- [MQTT and PLC Integration](mqtt_plc/)
-- [Fusion 360 Designs](fusion360_designs/)
-- [Hardware Documentation](hardware/)
+| Component | Role |
+|---|---|
+| SO-101 follower arm (Feetech STS3215 servos) | Picks up and places objects |
+| SO-101 leader arm | Records ACT demonstrations; re-used as a follower for the PS5 teleop demo |
+| Raspberry Pi 5 | Main computer: detection, ACT inference, control |
+| USB cameras (640 × 480) | Object detection and ACT observations |
+| PS5 DualSense controller | Teleoperation |
+| Hailo-8L AI accelerator | Investigated for faster inference |
+| Bottle and can bins | Sorting destinations |
 
+## Software
+
+Python · LeRobot 0.6.2 · Ultralytics YOLO11n · OpenCV · Flask · pygame (teleop) · Paho MQTT / pycomm3 (PLC work)
+
+## Running the sorting system (Raspberry Pi)
+
+The stage scripts import each other, so **all of them must be in one folder** on the Pi (`~/capstone_vision_ik`):
+
+```bash
+cd ~/capstone_vision_ik
+export GRIPPER_GUARD=1
+source gripper_settings.sh
+ACT_SECONDS=60 ENABLE_BIN_MOTION=1 python3 visor_stage3_sort_v2.py
+```
+Then open `http://<pi-ip>:5000` for the dashboard. See [robot_control/](robot_control/) for all the options.
+
+### Not included in this repository
+- **Model weights:** `models/best.pt` (YOLO) and `VISOR_ACT_20000/pretrained_model` (ACT) are too large for Git.
+- **Device-specific files:** LeRobot calibration JSON files and the saved poses in `calibration/*.json`.
+
+## Key engineering challenges solved
+
+- **Gripper overload:** ACT commanded the gripper tighter than the object, so the STS3215 tripped its overload protection. This was solved with a torque cap plus load and position feedback that holds the grip instead of squeezing harder. [Full write-up](docs/GRIPPER_OVERLOAD_FIX.md)
+- **Weak leader-arm servos in teleop:** the P gain was raised on the joints that work against gravity. [Details](teleoperation/)
+- **False starts from single-frame detections:** a 10-frame stability check was added before the robot reacts.
+
+## Current limitations and next steps
+- Improve aluminium can detection (the initial can mAP50 was only 4.9%).
+- Record repeatable sorting results: success rate and cycle time.
+- Reduce the delay between detection and the start of ACT, and smooth the moves between poses (see Issue #1).
+- Confirm whether inference uses the Hailo-8L or the Pi CPU.
+- Complete and document the PLC/MQTT conveyor integration.
+- Add photos, demo video and CAD files.
+
+## Safety
+Operate the robot in a clear workspace and supervise all automatic motion. The dashboard's normal stop is a software request, not a safety-rated emergency stop. Check the calibration and test poses at low speed before enabling `ENABLE_BIN_MOTION=1`.

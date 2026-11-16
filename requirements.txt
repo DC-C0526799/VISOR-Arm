@@ -1,12 +1,15 @@
 # VISOR Arm - Python Dependencies
 # Versions will be verified on Raspberry Pi 5.
 
-lerobot
+lerobot[feetech]==0.6.2
 ultralytics
 opencv-contrib-python
 numpy
 flask
 paho-mqtt
+
+# PS5 teleoperation (teleoperation/)
+pygame>=2.5
 
 # PLC communication (separate Python environment)
 # pycomm3

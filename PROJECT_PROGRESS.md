@@ -15,6 +15,11 @@
 - Flask-based monitoring dashboard
 - MQTT broker installation and initial communication testing
 - Raspberry Pi 5 enclosure design in Fusion 360
+- Gripper overload error diagnosed and fixed with a load/position feedback guard (`act_policy/guarded_act_rollout.py`), working 12 Nov 2026 — see [docs/GRIPPER_OVERLOAD_FIX.md](docs/GRIPPER_OVERLOAD_FIX.md)
+- Continuous sorting loop (`robot_control/visor_stage3_sort_v2.py`) using the `VISOR_ACT_20000` ACT model
+- Demonstration to the professor on 13 Nov 2026
+- PS5 DualSense teleoperation of the SO-101 leader arm re-used as a follower (`teleoperation/`)
+- Source code for Stages 1–3 and teleoperation published to this repository
 
 ## Integration and Improvement Work
 
@@ -22,12 +27,12 @@
 - Reducing YOLO-to-ACT activation delay
 - Improving movement smoothness between saved robot positions
 - Optimizing robotic pickup and placement
-- Testing the complete continuous sorting cycle
+- Measuring repeatable sorting results (success rate, cycle time)
+- Improving aluminium can detection accuracy
 - Finalizing the curved gripper design for cylindrical objects
 
 ## Planned Documentation
 
-- Full Python source code
 - YOLO and ACT configuration details
 - MQTT and PLC communication scripts
 - Fusion 360 design files
