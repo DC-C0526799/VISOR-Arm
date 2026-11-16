@@ -119,5 +119,11 @@ Then open `http://<pi-ip>:5000` for the dashboard. See [robot_control/](robot_co
 
 <p align="center"><img src="images/visor_team.jpg" width="560" alt="VISOR Arm capstone team"></p>
 
+| Member | Responsibilities |
+|---|---|
+| **Martin** | PLC automation (conveyor belt) · Documentation |
+| **Dileesh** | SO-101 training (ACT) · Object detection integration |
+| **Chan** | IoT design · Smart receptacles |
+
 ## Safety
 Operate the robot in a clear workspace and supervise all automatic motion. The dashboard's normal stop is a software request, not a safety-rated emergency stop. Check the calibration and test poses at low speed before enabling `ENABLE_BIN_MOTION=1`.
