@@ -1,3 +1,5 @@
+<p align="center"><img src="images/visor_arm_logo.jpg" width="360" alt="VISOR-ARM logo"></p>
+
 # VISOR Arm — AI-Powered Robotic Sorting System
 
 **Capstone Project 2026 · Robotics · Computer Vision · Imitation Learning · Automated Sorting**
@@ -7,6 +9,12 @@ VISOR Arm automatically identifies and sorts **plastic bottles** and **aluminium
 **Project status (November 2026):** The continuous sorting loop runs on the Raspberry Pi with the `VISOR_ACT_20000` ACT model. The gripper overload problem has been solved with a feedback guard, and the system was demonstrated on 13 Nov 2026. PS5-controller teleoperation is also working. Repeatable end-to-end performance figures (success rate, cycle time) haven't been measured yet.
 
 ---
+
+<p align="center">
+  <img src="images/so101_follower_on_bench.jpg" width="260" alt="SO-101 follower arm at the conveyor">
+  <img src="images/yolo_detected_plastic_bottle.jpg" width="330" alt="YOLO detecting a plastic bottle">
+  <img src="images/yolo_detected_aluminium_can.jpg" width="330" alt="YOLO detecting an aluminium can">
+</p>
 
 ## System overview
 
@@ -106,6 +114,10 @@ Then open `http://<pi-ip>:5000` for the dashboard. See [robot_control/](robot_co
 - Confirm whether inference uses the Hailo-8L or the Pi CPU.
 - Complete and document the PLC/MQTT conveyor integration.
 - Add photos, demo video and CAD files.
+
+## Team
+
+<p align="center"><img src="images/visor_team.jpg" width="560" alt="VISOR Arm capstone team"></p>
 
 ## Safety
 Operate the robot in a clear workspace and supervise all automatic motion. The dashboard's normal stop is a software request, not a safety-rated emergency stop. Check the calibration and test poses at low speed before enabling `ENABLE_BIN_MOTION=1`.

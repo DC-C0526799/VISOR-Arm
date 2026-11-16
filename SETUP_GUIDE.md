@@ -50,6 +50,11 @@ The follower calibration file ends up here, and our scripts read it:
 
 <br clear="right">
 
+<p>
+  <img src="images/assembly_2.jpg" width="300" alt="Assembling the SO-101 kit">
+  <img src="images/assembly_1.jpg" width="300" alt="Assembling and wiring the SO-101">
+</p>
+
 ## Step 2 — Create the project folder and vision environment
 
 ```bash
@@ -186,8 +191,8 @@ The position errors were all under 2°, and the can was detected and the arm ret
 
 ## Step 7 — Record demonstrations and train ACT
 
-1. Record pickup demonstrations with the **leader arm** moving the **follower arm**, using both cameras (gripper and top view) and LeRobot's recording tools (see the [LeRobot SO-101 docs](https://huggingface.co/docs/lerobot/so101)).
-2. Train an **ACT** policy on the dataset. Our final model is **`VISOR_ACT_20000`**.
+1. Record **40 pickup demonstration episodes** with the **leader arm** moving the **follower arm**, using both cameras (gripper and top view) and LeRobot's recording tools (see the [LeRobot SO-101 docs](https://huggingface.co/docs/lerobot/so101)).
+2. Train an **ACT** policy on the 40 episodes. Our final model is **`VISOR_ACT_20000`**.
 3. Copy it to the Pi at `~/models/VISOR_ACT_20000/pretrained_model`.
 
 <img src="images/act_dataset_rerun_view.jpg" width="640" alt="Recorded ACT episode in Rerun: gripper and top cameras with joint observation and action plots">
