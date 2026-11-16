@@ -1,17 +1,11 @@
 # VISOR Arm — Project Documentation
 
-This folder contains the technical documentation for the VISOR Arm capstone project.
+| Document | Description |
+|---|---|
+| [VISOR_Arm_Technical_Documentation.pdf](VISOR_Arm_Technical_Documentation.pdf) | Technical report: objectives, architecture, assembly, calibration, camera setup, YOLO, ACT and testing |
+| [GRIPPER_OVERLOAD_FIX.md](GRIPPER_OVERLOAD_FIX.md) | How the STS3215 gripper overload error was diagnosed and solved |
 
-## Documentation Topics
-
-- Project objectives and system architecture
-- SO-101 robotic arm assembly and calibration
-- Raspberry Pi 5 and camera configuration
-- YOLO object detection
-- ACT imitation learning
-- Automatic sorting and robot movement
-- MQTT and PLC communication
-- Fusion 360 mechanical designs
-- Testing results and project improvements
-
-Detailed technical reports, diagrams, and supporting documentation will be added as they are finalized.
+Other documentation:
+- [Setup Guide](../SETUP_GUIDE.md) and [System Architecture](../SYSTEM_ARCHITECTURE.md)
+- [Project Progress](../PROJECT_PROGRESS.md)
+- Module READMEs: [YOLO detection](../yolo_detection/), [ACT policy](../act_policy/), [robot control](../robot_control/), [PS5 teleoperation](../teleoperation/), [Fusion 360 designs](../fusion360_designs/)
