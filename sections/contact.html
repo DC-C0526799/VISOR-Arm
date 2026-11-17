@@ -328,7 +328,7 @@ a{cursor:pointer}
       <label>Message<textarea name="msg" rows="4" required></textarea></label>
       <button class="btn primary" type="submit">Send message</button>
       <p class="form-note" id="formNote" role="status"></p>
-      <p class="mail">Team email: <span>add team email here</span></p>
+      <p class="mail">Team email: <a href="mailto:visorsorting@gmail.com" target="_blank" rel="noopener">visorsorting@gmail.com</a></p>
     </form>
   </div>
 </section>
@@ -341,7 +341,7 @@ a{cursor:pointer}
 (()=>{const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 $$('.tablist button').forEach(b=>b.addEventListener('click',()=>{$$('.tablist button').forEach(x=>x.setAttribute('aria-selected',x===b));$$('.panel').forEach(p=>p.hidden=p.dataset.panel!==b.dataset.tab);}));
 const vid=$('#demoVid'),player=$('#player'); if(vid){$('#playBtn').addEventListener('click',()=>{vid.controls=true;vid.play().then(()=>player.classList.add('playing')).catch(()=>{});});vid.addEventListener('ended',()=>player.classList.remove('playing'));}
-const f=$('#contactForm'); if(f) f.addEventListener('submit',e=>{e.preventDefault();$('#formNote').textContent='Thanks! Please email the team directly for now.';f.reset();});
+const f=$('#contactForm'); if(f) f.addEventListener('submit',e=>{e.preventDefault();const d=new FormData(f);const sub='V.I.S.O.R. website message from '+d.get('name');const body=d.get('msg')+'\n\n'+d.get('name')+' ('+d.get('email')+')';window.open('mailto:visorsorting@gmail.com?subject='+encodeURIComponent(sub)+'&body='+encodeURIComponent(body),'_blank');$('#formNote').textContent='Your email app should open with the message ready. Press Send there. If nothing opens, write to visorsorting@gmail.com.';});
 const h=$('#hero'); if(h) setTimeout(()=>h.classList.add('open','show'),200);
 $$('a[href^="http"],a[href$=".pdf"],a[href$=".mp4"]').forEach(a=>{a.target='_blank';a.rel='noopener';});
 })();
