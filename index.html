@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V.I.S.O.R. — Website plan for Wix | Camosun ECET Capstone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05070a; --ink:#e9eef2; --dim:#8a96a3; --accent:#3ee6d2; --accent2:#ffb25b;
+    --display:"Space Grotesk",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:var(--display);-webkit-font-smoothing:antialiased}
+  .hero{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;isolation:isolate}
+  #gl,#fallback{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #fallback{object-fit:cover;display:none}
+  .bars::before,.bars::after{content:"";position:absolute;left:0;right:0;height:9vh;background:#000;z-index:3;transition:transform 1.6s cubic-bezier(.7,0,.2,1)}
+  .bars::before{top:0}.bars::after{bottom:0}
+  .hero.open .bars::before{transform:translateY(-100%)}
+  .hero.open .bars::after{transform:translateY(100%)}
+
+  .ui{position:absolute;inset:0;z-index:2;pointer-events:none;
+      padding:clamp(20px,4vw,56px);display:grid;grid-template-rows:auto 1fr auto}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .brand{font-weight:700;letter-spacing:.32em;font-size:13px}
+  .brand b{color:var(--accent)}
+  .nav{display:flex;gap:28px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .nav a{color:inherit;text-decoration:none;pointer-events:auto}
+  .nav a:hover{color:var(--ink)}
+
+  .copy{align-self:center;max-width:min(560px,46vw)}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);
+           display:flex;align-items:center;gap:12px;margin-bottom:22px}
+  .eyebrow::before{content:"";width:36px;height:1px;background:var(--accent)}
+  h1{font-size:clamp(56px,9vw,148px);line-height:.86;font-weight:700;letter-spacing:-.02em}
+  h1 .dot{color:var(--accent)}
+  .sub{margin-top:26px;font-size:clamp(16px,1.35vw,20px);line-height:1.5;color:#b9c3cc;max-width:34em}
+  .cta{margin-top:34px;display:flex;gap:14px;flex-wrap:wrap}
+  .btn{pointer-events:auto;font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;
+       padding:15px 22px;border:1px solid rgba(233,238,242,.25);color:var(--ink);text-decoration:none;
+       background:rgba(5,7,10,.35);backdrop-filter:blur(6px);transition:border-color .25s,background .25s}
+  .btn:hover{border-color:var(--accent)}
+  .btn.primary{background:var(--accent);color:#031412;border-color:var(--accent);font-weight:500}
+  .btn.primary:hover{background:#7ff1e4}
+
+  .hud{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;font-family:var(--mono);font-size:11px;
+       letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .phase{min-width:260px}
+  .phase .lbl{color:var(--ink);font-size:12px;margin-bottom:10px;display:flex;gap:10px;align-items:center}
+  .phase .lbl i{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  .track{height:1px;background:rgba(233,238,242,.15);position:relative}
+  .track b{position:absolute;left:0;top:-1px;height:3px;background:var(--accent);width:0}
+  .stats{display:flex;gap:34px;text-align:right}
+  .stats div span{display:block;color:var(--ink);font-size:20px;letter-spacing:.02em;font-family:var(--display);margin-bottom:4px}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(18px);transition:opacity 1.1s ease, transform 1.1s cubic-bezier(.2,.7,.1,1)}
+  .show .rv{opacity:1;transform:none}
+  .show .rv.d1{transition-delay:.12s}.show .rv.d2{transition-delay:.3s}.show .rv.d3{transition-delay:.5s}.show .rv.d4{transition-delay:.7s}
+
+  .loader{position:absolute;inset:0;z-index:4;display:grid;place-items:center;font-family:var(--mono);font-size:12px;
+          letter-spacing:.3em;color:var(--dim);transition:opacity .8s}
+  .loader.gone{opacity:0;pointer-events:none}
+  .loader .bar{width:180px;height:1px;background:rgba(255,255,255,.12);margin-top:16px;position:relative}
+  .loader .bar b{position:absolute;left:0;top:0;height:1px;background:var(--accent);width:0}
+
+  .capture .ui,.capture .loader,.capture .bars::before,.capture .bars::after{display:none}
+
+  @media (max-width:820px){
+    .copy{max-width:100%;align-self:start;margin-top:8vh}
+    .nav{display:none}
+    .stats{display:none}
+    .sub{font-size:15px}
+  }
+
+  .next{padding:120px clamp(20px,4vw,56px);max-width:1100px;margin:0 auto;color:var(--dim);font-size:18px;line-height:1.6}
+  .next h2{color:var(--ink);font-size:32px;margin-bottom:16px}
+
+  /* ===== site (below the hero) ===== */
+  html{scroll-behavior:smooth;scroll-padding-top:72px}
+  :root{--line:rgba(233,238,242,.10);--panel:#0b1016;--panel2:#0e151c;--can:#ffb25b}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
+  main section{padding:clamp(80px,11vw,140px) 0;position:relative}
+  main section.band{background:linear-gradient(180deg,#070b0f 0%,#080d12 100%);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  h2{font-size:clamp(32px,4.2vw,56px);line-height:1.04;letter-spacing:-.02em;font-weight:700;max-width:18ch;margin-bottom:22px}
+  h3{font-size:21px;letter-spacing:-.01em;font-weight:600;margin-bottom:10px}
+  main p{color:#aab5bf;font-size:17px;line-height:1.65;max-width:62ch}
+  main p+p{margin-top:14px}
+  em{font-style:italic;color:#d6dde3}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)!important;margin-bottom:16px}
+  .sub2{margin-bottom:44px}
+  .two{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(36px,6vw,90px);align-items:center}
+
+  /* top bar */
+  .topbar{position:fixed;top:0;left:0;right:0;z-index:20;height:64px;display:flex;align-items:center;justify-content:space-between;
+          padding:0 clamp(20px,4vw,48px);transition:background .35s,border-color .35s,transform .5s;border-bottom:1px solid transparent;transform:translateY(-100%)}
+  .topbar.on{transform:none}
+  .topbar.solid{background:rgba(5,7,10,.82);backdrop-filter:blur(12px);border-color:var(--line)}
+  .logo{font-weight:700;letter-spacing:.32em;font-size:13px;color:var(--ink);text-decoration:none}
+  .logo b{color:var(--accent)}
+  .menu{display:flex;gap:26px;align-items:center;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+  .menu a{color:var(--dim);text-decoration:none;transition:color .2s}
+  .menu a:hover,.menu a.act{color:var(--ink)}
+  .menu a.pill{color:#031412;background:var(--accent);padding:9px 14px}
+  .burger{display:none;background:none;border:0;width:40px;height:40px;cursor:pointer}
+  .burger span{display:block;height:1px;background:var(--ink);margin:7px 8px;transition:transform .3s}
+  .hero .ui .top{visibility:hidden}
+
+  /* intro */
+  .intro{padding:clamp(70px,9vw,110px) 0!important}
+  .intro-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:clamp(30px,6vw,90px);align-items:end}
+  .lede{font-size:clamp(20px,2vw,27px)!important;line-height:1.45!important;color:#dde4ea!important;max-width:none!important}
+  .lede strong{color:var(--ink);font-weight:600}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:22px 28px;border-top:1px solid var(--line);padding-top:22px}
+  .facts dt{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+  .facts dd{font-size:16px;color:var(--ink)}
+
+  /* stat ring */
+  .stat{display:flex;flex-direction:column;align-items:center;text-align:center;gap:26px}
+  .ring{--p:0;width:min(300px,70vw);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;
+        background:conic-gradient(var(--accent) calc(var(--p)*1%),rgba(233,238,242,.08) 0);position:relative}
+  .ring::before{content:"";position:absolute;inset:10px;border-radius:50%;background:#080d12}
+  .ring span{position:relative;font-size:clamp(56px,7vw,84px);font-weight:700;letter-spacing:-.03em}
+  .ring small{font-size:.45em;color:var(--accent);margin-left:2px}
+  .stat figcaption{color:var(--dim);font-size:15px;line-height:1.6;max-width:36ch}
+
+  /* steps */
+  .steps{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:48px;counter-reset:s}
+  .steps li{background:var(--panel);padding:34px 28px 36px;position:relative;counter-increment:s;border-top:2px solid transparent;transition:border-color .3s,background .3s}
+  .steps li:hover{border-color:var(--accent);background:var(--panel2)}
+  .steps li::before{content:"0" counter(s);font-family:var(--mono);font-size:12px;color:var(--dim);position:absolute;top:22px;right:24px}
+  .steps svg{width:52px;height:52px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-bottom:26px}
+  .steps svg .ac{stroke:var(--accent)}
+  .steps p{font-size:15.5px}
+
+  /* architecture */
+  .arch{margin:0 0 56px;background:var(--panel);border:1px solid var(--line);padding:clamp(14px,2.5vw,30px)}
+  .arch svg{width:100%;height:auto;display:block;font-family:var(--display)}
+  .arch .grp rect{fill:none;stroke:rgba(233,238,242,.12);stroke-dasharray:4 6}
+  .arch .grp text{font-family:var(--mono);font-size:12px;letter-spacing:.18em;fill:var(--accent)}
+  .arch .node rect{fill:#0f171f;stroke:rgba(233,238,242,.16)}
+  .arch .node.hot rect{stroke:var(--accent)}
+  .arch .node text{fill:var(--ink);font-size:16px;font-weight:600}
+  .arch .node text.s{fill:var(--dim);font-size:12.5px;font-weight:400}
+  .arch .lnk{color:#6f7c88}
+  .arch .lnk path{fill:none;stroke:#6f7c88;stroke-width:1.6}
+  .arch .lnk path.dash{stroke:var(--accent);stroke-dasharray:6 6;animation:flow 1.2s linear infinite}
+  .arch .lnk path.skip{stroke:none}
+  .arch .tag{font-family:var(--mono);font-size:11px;fill:var(--accent);letter-spacing:.08em}
+  .arch figcaption{color:var(--dim);font-size:13px;margin-top:14px;font-family:var(--mono)}
+  @keyframes flow{to{stroke-dashoffset:-24}}
+
+  /* tabs */
+  .tablist{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:2px}
+  .tablist button{flex:1;min-width:150px;background:var(--panel);color:var(--dim);border:0;border-top:2px solid transparent;padding:18px 20px;
+                  font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-align:left}
+  .tablist button[aria-selected=true]{color:var(--ink);border-color:var(--accent);background:var(--panel2)}
+  .panel{background:var(--panel2);padding:clamp(26px,4vw,48px);display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(26px,5vw,70px);animation:fade .45s ease}
+  .panel[hidden]{display:none}
+  .specs{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:2px;align-content:start}
+  .specs li{background:#0a1015;padding:20px;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  .specs b{display:block;font-family:var(--display);font-size:28px;letter-spacing:-.01em;color:var(--ink);text-transform:none;margin-bottom:6px;font-weight:600}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}}
+
+  /* demo */
+  .demo{display:grid;grid-template-columns:1.6fr .9fr;gap:2px;margin-top:40px}
+  .player{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden}
+  .player video{width:100%;height:100%;object-fit:cover;display:block}
+  .play{position:absolute;inset:0;margin:auto;width:84px;height:84px;border-radius:50%;border:1px solid rgba(255,255,255,.4);
+        background:rgba(5,7,10,.45);backdrop-filter:blur(6px);cursor:pointer;display:grid;place-items:center;transition:transform .25s,background .25s}
+  .play:hover{transform:scale(1.06);background:var(--accent)}
+  .play svg{width:30px;fill:var(--ink);margin-left:4px}
+  .play:hover svg{fill:#031412}
+  .player.playing .play{opacity:0;pointer-events:none}
+  .ph-note{position:absolute;left:14px;bottom:12px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:#ffd9a8;background:rgba(0,0,0,.55);padding:6px 9px;border:1px dashed rgba(255,178,91,.6)}
+  .targets{list-style:none;display:grid;gap:2px}
+  .targets li{background:var(--panel);padding:26px 26px;display:flex;flex-direction:column;justify-content:center}
+  .targets b{font-size:34px;letter-spacing:-.02em;color:var(--ink)}
+  .targets span{color:var(--dim);font-size:14px;margin-top:6px}
+
+  /* timeline */
+  .timeline{list-style:none;margin-top:48px;position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:20px}
+  .timeline::before{content:"";position:absolute;left:0;right:0;top:7px;height:1px;background:var(--line)}
+  .timeline li{position:relative;padding-top:34px}
+  .timeline li::before{content:"";position:absolute;top:0;left:0;width:15px;height:15px;border-radius:50%;background:#080d12;border:1px solid var(--accent)}
+  .timeline li.now::before{background:var(--accent);box-shadow:0 0 18px var(--accent)}
+  .timeline time{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .timeline p{font-size:14.5px;margin-top:8px}
+
+  /* team */
+  .team{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,3vw,36px);margin-top:48px}
+  .photo{aspect-ratio:4/5;background:radial-gradient(120% 80% at 50% 0%,#14202a,#090d12);position:relative;display:grid;place-items:center;
+         margin-bottom:22px;overflow:hidden;border:1px dashed rgba(233,238,242,.18)}
+  .photo::before{content:attr(data-initials);font-size:72px;font-weight:700;letter-spacing:.02em;color:rgba(233,238,242,.08)}
+  .photo span{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .member .role{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:-2px 0 12px}
+  .member p{font-size:15.5px}
+  .lnk-in{display:inline-block;margin-top:14px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--accent)}
+
+  /* docs */
+  .docs{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:44px}
+  .doc{background:var(--panel);padding:28px 26px 30px;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:6px;position:relative;transition:background .25s}
+  .doc:hover{background:var(--panel2)}
+  .doc::after{content:"↗";position:absolute;right:24px;top:24px;color:var(--dim);transition:color .2s,transform .2s}
+  .doc:hover::after{color:var(--accent);transform:translate(2px,-2px)}
+  .doc .ext{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent);margin-bottom:18px}
+  .doc b{font-size:19px;font-weight:600}
+  .doc small{color:var(--dim);font-size:14px}
+  .doc.feature{background:linear-gradient(135deg,rgba(62,230,210,.16),rgba(62,230,210,.02)),var(--panel)}
+  .doc.code .ext{color:var(--can)}
+
+  /* manual */
+  .manual{background:#f1efe9;color:#14181c;padding:30px 30px 26px;box-shadow:0 30px 80px rgba(0,0,0,.5);transform:rotate(1.2deg)}
+  .mhead{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#59636c;
+         border-bottom:1px solid #d3d0c8;padding-bottom:12px;margin-bottom:12px}
+  .manual ol{list-style:none;counter-reset:m}
+  .manual li{counter-increment:m;display:grid;grid-template-columns:34px 1fr;gap:2px 8px;padding:9px 0;border-bottom:1px dotted #d3d0c8}
+  .manual li::before{content:counter(m);grid-row:span 2;font-family:var(--mono);font-size:13px;color:#0f8f82;font-weight:500}
+  .manual li b{font-size:15px}
+  .manual li span{font-size:13px;color:#5d6770}
+  #manual .btn{display:inline-block;margin-top:28px}
+
+  /* closing */
+  .closing .optimist{color:var(--ink)!important;font-size:19px!important;border-left:2px solid var(--accent);padding-left:18px;margin-top:26px!important}
+  .contact{background:var(--panel2);padding:clamp(24px,3.5vw,38px);display:grid;gap:16px}
+  .contact p{font-size:15px}
+  .contact label{display:grid;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .contact input,.contact textarea{background:#070b0f;border:1px solid rgba(233,238,242,.16);color:var(--ink);padding:13px 14px;font:inherit;
+        font-family:var(--display);font-size:16px;text-transform:none;letter-spacing:0;resize:vertical}
+  .contact input:focus,.contact textarea:focus{outline:none;border-color:var(--accent)}
+  .contact .btn{justify-self:start;cursor:pointer}
+  .form-note{color:var(--accent)!important;font-family:var(--mono);font-size:13px!important;min-height:1em}
+  .mail span{color:#ffd9a8;border-bottom:1px dashed rgba(255,178,91,.6)}
+
+  .foot{border-top:1px solid var(--line);padding:30px 0;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--dim)}
+  .footrow{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .foot b{color:var(--accent)} .foot a{color:var(--ink);text-decoration:none}
+
+  /* placeholders the team still has to fill */
+  [data-todo]{outline:1px dashed rgba(255,178,91,.55);outline-offset:-1px}
+
+  /* rubric aid */
+  .rubric-btn{position:fixed;right:18px;bottom:18px;z-index:30;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+              background:#ffb25b;color:#1b1206;border:0;padding:11px 14px;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+  .rubric{position:fixed;right:18px;bottom:64px;z-index:30;width:min(340px,calc(100vw - 36px));background:#11161c;border:1px solid rgba(255,178,91,.45);
+          padding:20px 20px 16px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+  .rubric h4{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#ffb25b;margin-bottom:12px}
+  .rubric ul{list-style:none;display:grid;gap:10px}
+  .rubric li{font-size:13.5px;color:#c4ccd3;line-height:1.45}
+  .rubric li b{display:block;color:var(--ink);font-size:13px}
+  .rubric a{color:var(--accent)}
+  .rubric p{font-size:12px;color:var(--dim);margin-top:12px}
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.1,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.arch .lnk path.dash{animation:none}}
+
+  @media (max-width:980px){
+    .steps{grid-template-columns:1fr 1fr}
+    .timeline{grid-template-columns:1fr 1fr 1fr;row-gap:34px}
+    .docs{grid-template-columns:1fr 1fr}
+    .demo{grid-template-columns:1fr}
+    .targets{grid-template-columns:repeat(3,1fr)}
+  }
+  @media (max-width:820px){
+    .menu{position:fixed;top:64px;left:0;right:0;flex-direction:column;align-items:flex-start;gap:0;background:rgba(5,7,10,.97);
+          border-bottom:1px solid var(--line);padding:8px 24px 18px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:.25s}
+    .menu.open{transform:none;opacity:1;pointer-events:auto}
+    .menu a{padding:14px 0;width:100%;border-bottom:1px solid var(--line)}
+    .menu a.pill{margin-top:12px;width:auto;border:0}
+    .burger{display:block}
+    .two,.intro-grid,.panel{grid-template-columns:1fr}
+    .team{grid-template-columns:1fr;max-width:420px}
+    .docs{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr}
+    .timeline{grid-template-columns:1fr;gap:0}
+    .timeline::before{left:7px;right:auto;top:0;bottom:0;width:1px;height:auto}
+    .timeline li{padding:0 0 26px 34px}
+    .targets{grid-template-columns:1fr}
+    .manual{transform:none}
+    .arch{overflow-x:auto}
+    .arch svg{min-width:760px}
+  }
+
+
+  #heroVid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#05070a}
+  .hero .shade{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(5,7,10,.78) 0%,rgba(5,7,10,.35) 45%,rgba(5,7,10,0) 70%)}
+  @media (max-width:820px){ .hero .shade{background:linear-gradient(180deg,rgba(5,7,10,.85) 0%,rgba(5,7,10,.4) 55%,rgba(5,7,10,0) 80%)} #heroVid{object-position:68% 50%} }
+  .timeline{grid-template-columns:repeat(7,1fr)}
+  @media (max-width:980px){.timeline{grid-template-columns:repeat(4,1fr)}}
+  @media (max-width:820px){.timeline{grid-template-columns:1fr}}
+
+  .photo.has{border:0;background:#0b1016}
+  .photo.has::before{content:none}
+  .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 22%;filter:saturate(.92) contrast(1.03)}
+  .group{margin:40px 0 0;position:relative}
+  .group img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:50% 30%}
+  .group figcaption{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--dim);margin-top:12px}
+  .vcap{font-family:var(--mono);font-size:13px!important;color:var(--dim)!important;margin-top:14px}
+  .player video[controls]~.play{display:none}
+
+  .shots{grid-column:1/-1;display:grid;gap:14px;margin-top:6px}
+  .shots.c2{grid-template-columns:1fr 1fr} .shots.c4{grid-template-columns:repeat(4,1fr)}
+  .shots figure{margin:0}
+  .shots img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#0a1015}
+  .shots figcaption{font-size:13px;color:var(--dim);margin-top:8px;line-height:1.45}
+  @media (max-width:820px){.shots.c2,.shots.c4{grid-template-columns:1fr 1fr}}
+  .manual li{grid-template-columns:34px 1fr auto}
+  .manual li b,.manual li span{grid-column:2}
+  .manual li .pg{grid-row:1 / span 2;grid-column:3;font-style:normal;font-family:var(--mono);font-size:12px;color:#5d6770;align-self:center}
+  .manual li::before{grid-row:1 / span 2;grid-column:1}
+  .doc .ext{white-space:nowrap}
+</style>
+</head>
+<body id="top">
+<section class="hero" id="hero">
+  <!-- In Wix: strip with a video background (visor-hero-loop.mp4) and a dark overlay on the left -->
+  <video id="heroVid" src="visor-hero-loop.mp4" autoplay muted loop playsinline aria-label="The SO-101 robotic arm assembling and disassembling"></video>
+  <div class="shade"></div>
+  <div class="ui" id="ui">
+    <div class="top"></div>
+    <div class="copy">
+      <div class="eyebrow rv">ECET Capstone · Camosun College · 2026</div>
+      <h1 class="rv d1">V.I.S.O.R<span class="dot">.</span></h1>
+      <p class="sub rv d2">An open-source SO-ARM101 that sees, picks and sorts plastic bottles and aluminium cans, then checks its own work. Accessible, vision-guided recycling for smaller sorting centres.</p>
+      <div class="cta rv d3">
+        <a class="btn primary" href="#demo">Watch it sort</a>
+        <a class="btn" href="#how">How it works</a>
+      </div>
+    </div>
+    <div class="hud rv d4">
+      <div class="phase"><div class="lbl"><i></i><span>Three-stage sorting line</span></div><div class="track"><b style="width:100%"></b></div></div>
+      <div class="stats">
+        <div><span>3</span>Raspberry Pi stages</div>
+        <div><span>12</span>STS3215 servos</div>
+        <div><span>YOLO + ACT</span>Detection + learned grasp</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<header class="topbar" id="topbar">
+  <a class="logo" href="#top">V.I.S.O.R<b>.</b></a>
+  <nav class="menu" id="menu">
+    <a href="#problem">Problem</a>
+    <a href="#how">How it works</a>
+    <a href="#system">System</a>
+    <a href="#demo">Demo</a>
+    <a href="#team">Team</a>
+    <a href="#docs">Documents</a>
+    <a href="#contact" class="pill">Contact</a>
+  </nav>
+  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+</header>
+
+<main>
+<!-- ============ OPENING: INTRO STRIP ============ -->
+<section class="intro" id="intro">
+  <div class="wrap intro-grid">
+    <p class="lede reveal">We are <strong>V.I.S.O.R.</strong>, a three-person Electronics &amp; Computer Engineering Technology team at <strong>Camosun College</strong>. We turned an open-source SO-ARM101 robotic arm into a small-scale recycling line: a PLC-driven conveyor delivers each item, the arm identifies it and drops it into the right bin, and a quality-control station checks the result.</p>
+    <dl class="facts reveal">
+      <div><dt>Sorts</dt><dd>Plastic bottles · Aluminium cans</dd></div>
+      <div><dt>Built at</dt><dd>Camosun College, Victoria BC</dd></div>
+      <div><dt>Program</dt><dd>ECET Capstone 2026</dd></div>
+      <div><dt>See it live</dt><dd>Capstone Symposium · Dec 18</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section class="band" id="problem">
+  <div class="wrap two">
+    <div class="reveal">
+      <p class="kicker">01 — The problem</p>
+      <h2>Sorting is where recycling succeeds or fails</h2>
+      <p>Large material recovery facilities (MRFs) rely on optical sorters and robots that small recycling centres cannot afford. Mixed streams then end up hand-sorted, or not sorted at all.</p>
+      <p>V.I.S.O.R. scales the MRF idea down to a single workstation built from open-source parts, so a small centre can start automating with hardware it can afford and repair.</p>
+    </div>
+    <figure class="stat reveal">
+      <div class="ring" style="--p:78.5"><span>78.5<small>%</small></span></div>
+      <figcaption>of BC residential packaging and paper is properly sorted, according to Recycle BC's annual reporting. Every point gained at the sorting stage keeps material out of landfill.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how">
+  <div class="wrap">
+    <p class="kicker reveal">02 — How it works</p>
+    <h2 class="reveal">Four stages, one continuous loop</h2>
+    <ol class="steps">
+      <li class="reveal">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="38" width="52" height="10" rx="5"/><circle cx="14" cy="43" r="3"/><circle cx="50" cy="43" r="3"/><rect x="26" y="22" width="12" height="16" rx="2"/><path d="M8 30h8M48 30h8" class="ac"/></svg>
+        <h3>Detect</h3>
+        <p>An Allen-Bradley PLC runs the conveyor and stops it the moment a sensor detects an item at the pick point.</p>
+      </li>
+      <li class="reveal">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 32s10-16 26-16 26 16 26 16-10 16-26 16S6 32 6 32z"/><circle cx="32" cy="32" r="8" class="ac"/><path d="M14 10h-6v6M50 10h6v6M14 54h-6v-6M50 54h6v-6"/></svg>
+        <h3>Identify</h3>
+        <p>A USB camera feeds a custom-trained <em>YOLO</em> model on a Raspberry Pi 5 with an AI HAT, which labels the item as a plastic bottle or an aluminium can.</p>
+      </li>
+      <li class="reveal">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 56h20M20 56V40l14-14 12 8"/><circle cx="20" cy="40" r="3"/><circle cx="34" cy="26" r="3"/><path d="M46 34l6-4M46 34l4 6" class="ac"/></svg>
+        <h3>Pick &amp; sort</h3>
+        <p>An imitation-learning policy (<em>ACT</em>, trained in <em>LeRobot</em> on our own demonstrations) drives the SO-ARM101 to grasp the item and drop it in the matching bin.</p>
+      </li>
+      <li class="reveal">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="12" width="48" height="32" rx="3"/><path d="M24 56h16M32 44v12"/><path d="M20 30l8 6 16-14" class="ac"/></svg>
+        <h3>Verify</h3>
+        <p>A second Raspberry Pi with a Pi camera checks each sorted item and shows the result, with live counts, on a TFT screen.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ SYSTEM ============ -->
+<section class="band" id="system">
+  <div class="wrap">
+    <p class="kicker reveal">03 — The system</p>
+    <h2 class="reveal">Three subsystems, three engineers</h2>
+    <p class="sub2 reveal">Each subsystem has an owner. Integration ties them together over Ethernet (MQTT), USB and Wi-Fi.</p>
+
+    <figure class="arch reveal" aria-label="System architecture diagram">
+      <svg viewBox="0 0 1000 420" role="img">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker>
+        </defs>
+        <g class="grp"><rect x="20" y="20" width="300" height="380" rx="14"/><text x="40" y="52">1 · CONVEYOR &amp; PLC</text></g>
+        <g class="grp"><rect x="350" y="20" width="300" height="380" rx="14"/><text x="370" y="52">2 · ARM CONTROL &amp; VISION</text></g>
+        <g class="grp"><rect x="680" y="20" width="300" height="380" rx="14"/><text x="700" y="52">3 · QUALITY CONTROL</text></g>
+
+        <g class="node"><rect x="50" y="80" width="240" height="64" rx="10"/><text x="70" y="108">Allen-Bradley PLC</text><text x="70" y="128" class="s">5069-L310ERM · Stratix 5700</text></g>
+        <g class="node"><rect x="50" y="190" width="240" height="64" rx="10"/><text x="70" y="218">PowerFlex 527 VFD</text><text x="70" y="238" class="s">Drives the conveyor motor</text></g>
+        <g class="node"><rect x="50" y="300" width="240" height="64" rx="10"/><text x="70" y="328">QC AC40 conveyor</text><text x="70" y="348" class="s">Proximity sensor · light curtain</text></g>
+
+        <g class="node hot"><rect x="380" y="80" width="240" height="64" rx="10"/><text x="400" y="108">Raspberry Pi 5 + AI HAT</text><text x="400" y="128" class="s">YOLO · ACT policy · control</text></g>
+        <g class="node"><rect x="380" y="190" width="240" height="64" rx="10"/><text x="400" y="218">2 MP USB camera</text><text x="400" y="238" class="s">Live feed of the pick point</text></g>
+        <g class="node hot"><rect x="380" y="300" width="240" height="64" rx="10"/><text x="400" y="328">SO-ARM101 · 6-DOF</text><text x="400" y="348" class="s">STS3215 servos · Waveshare adapter</text></g>
+
+        <g class="node hot"><rect x="710" y="80" width="240" height="64" rx="10"/><text x="730" y="108">Raspberry Pi 4 + Pi camera</text><text x="730" y="128" class="s">YOLO11n + MobileNetV3 · Flask</text></g>
+        <g class="node"><rect x="710" y="190" width="240" height="64" rx="10"/><text x="730" y="218">ESP32 DevKit</text><text x="730" y="238" class="s">Fetches and decodes the JPEG feed</text></g>
+        <g class="node"><rect x="710" y="300" width="240" height="64" rx="10"/><text x="730" y="328">ILI9341 TFT · 320 × 240</text><text x="730" y="348" class="s">Live feed, counters, warnings</text></g>
+
+        <g class="lnk">
+          <path d="M170 144v46" marker-end="url(#ah)"/><path d="M170 254v46" marker-end="url(#ah)"/>
+          <path d="M500 190v-46" marker-end="url(#ah)"/>
+          <path d="M380 128h-10q-6 0-6 6v192q0 6 6 6h10" marker-end="url(#ah)"/>
+          <path d="M830 144v46" marker-end="url(#ah)"/><path d="M830 254v46" marker-end="url(#ah)"/>
+          <path d="M290 112h90" marker-start="url(#ah)" marker-end="url(#ah)" class="dash"/>
+          <path d="M620 332h30q15 0 15-15V127q0-15 15-15h30" marker-end="url(#ah)"/>
+        </g>
+        <text x="300" y="104" class="tag">MQTT</text>
+        <text x="626" y="350" class="tag">Bins</text>
+        <text x="358" y="236" class="tag" transform="rotate(-90 358 236)" text-anchor="middle">USB servo bus</text>
+        <text x="838" y="176" class="tag">Wi-Fi</text>
+        <text x="838" y="286" class="tag">SPI</text>
+      </svg>
+      <figcaption>System architecture. The dashed MQTT link (through a Mosquitto broker) is the integration work in progress for the final build.</figcaption>
+    </figure>
+
+    <div class="tabs reveal" id="tabs">
+      <div class="tablist" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="arm">Robotic arm</button>
+        <button role="tab" aria-selected="false" data-tab="vision">Vision</button>
+        <button role="tab" aria-selected="false" data-tab="plc">Conveyor &amp; PLC</button>
+        <button role="tab" aria-selected="false" data-tab="bins">Quality control</button>
+      </div>
+      <div class="panel" data-panel="arm">
+        <div>
+          <h3>A learned grasp, not a scripted one</h3>
+          <p>We recorded demonstration episodes by guiding a leader arm while the follower copied every servo move. <em>LeRobot</em> trained an Action Chunking Transformer (ACT) on those episodes, so the follower now picks items on its own.</p>
+          <p>A load-and-position guard watches the gripper servo and stops the squeeze before it overloads, which protects both the motor and the bottle. <em>Rerun</em> graphs every motor's activity so we can track stability.</p>
+        </div>
+        <ul class="specs">
+          <li><b>6</b>degrees of freedom</li>
+          <li><b>12</b>STS3215 servos, two arms</li>
+          <li><b>10–150 g</b>payload target</li>
+          <li><b>±2 mm</b>repeatability target</li>
+        </ul>
+        <div class="shots c2"><figure><img src="img/arm-assembly.jpg" alt="Dileesh assembling the SO-ARM101 kit at a workbench" loading="lazy"><figcaption>Week 3: assembling and calibrating both SO-ARM101 arms.</figcaption></figure><figure><img src="img/gripper-cad.jpg" alt="Fusion 360 model of the curved gripper jaw" loading="lazy"><figcaption>Our curved gripper jaw, designed in <em>Fusion 360</em> to hold round bottles and cans.</figcaption></figure></div>
+      </div>
+      <div class="panel" data-panel="vision" hidden>
+        <div>
+          <h3>Two classes, one fast decision</h3>
+          <p>We trained a custom <em>YOLO</em> object detector on two classes, plastic bottles and aluminium cans, using datasets from <em>Roboflow</em>. <em>OpenCV</em> manages the camera stream on the Raspberry Pi 5, and an AI HAT speeds up the inference.</p>
+          <p>The detector draws a box, assigns a class and reports a confidence score for every item in frame.</p>
+        </div>
+        <ul class="specs">
+          <li><b>2</b>material classes</li>
+          <li><b>Pi 5</b>upgraded from Pi 4 in week 6</li>
+          <li><b>≤ 500 ms</b>detection cycle target</li>
+          <li><b>1080p</b>camera target</li>
+        </ul>
+        <div class="shots c2"><figure><img src="img/vision-live.jpg" alt="Live YOLO view labelling a plastic bottle and an aluminium can" loading="lazy"><figcaption>Live <em>YOLO</em> view: a bottle and a can, each detected at 0.86 confidence.</figcaption></figure><figure><img src="img/vision-can.jpg" alt="Gripper camera view of an aluminium can on the conveyor" loading="lazy"><figcaption>The view from the detection pose: an aluminium can at 0.89 confidence.</figcaption></figure></div>
+      </div>
+      <div class="panel" data-panel="plc" hidden>
+        <div>
+          <h3>An industrial line in miniature</h3>
+          <p>Ladder logic written in <em>Studio 5000 Logix Designer</em> runs the conveyor through a PowerFlex 527 drive. A proximity sensor stops the belt at the pick point, and a GuardShield light curtain guards the work area.</p>
+          <p>The PLC will exchange messages with the Raspberry Pi 5 over MQTT, through a Mosquitto broker on a Stratix 5700 Ethernet network.</p>
+        </div>
+        <ul class="specs">
+          <li><b>0.05–0.15</b>m/s belt speed target</li>
+          <li><b>MQTT</b>PLC ↔ Pi 5 link</li>
+          <li><b>≤ 100 ms</b>E-stop target</li>
+          <li><b>&lt; 10 A</b>total draw target</li>
+        </ul>
+        <div class="shots c2"><figure><img src="img/plc-panel.jpg" alt="PLC control panel with controller, drive, touchscreen, stack light and emergency stop" loading="lazy"><figcaption>The control panel: PLC, drive, touchscreen, stack light and emergency stop.</figcaption></figure><figure><img src="img/conveyor-arm.jpg" alt="Conveyor belt and SO-ARM101 together on the lab cart" loading="lazy"><figcaption>Week 7: the first full integration of the conveyor and the arm.</figcaption></figure></div>
+      </div>
+      <div class="panel" data-panel="bins" hidden>
+        <div>
+          <h3>A second set of eyes on every bin</h3>
+          <p>A Raspberry Pi 4 with a Pi camera watches the sorted items. A two-stage model, <em>YOLO11n</em> to find each item and <em>MobileNetV3</em> to confirm whether it is a bottle or a can, draws boxes, labels and counters on every frame.</p>
+          <p>A <em>Flask</em> server shares the processed image over Wi-Fi. An ESP32 DevKit fetches and decodes it, then shows the live feed and a count for each container on a TFT touch screen. When a container is full, the screen tells staff to empty it and press its reset button. The electronics sit on a custom PCB in a snap-fit enclosure.</p>
+        </div>
+        <ul class="specs">
+          <li><b>2-stage</b>YOLO11n + MobileNetV3</li>
+          <li><b>320 × 240</b>ILI9341 TFT over SPI</li>
+          <li><b>Wi-Fi</b>JPEG stream from Pi 4</li>
+          <li><b>JLCPCB</b>custom PCB, snap-fit case</li>
+        </ul>
+        <div class="shots c4"><figure><img src="img/qc-tft.jpg" alt="TFT display showing 4 cans and 5 bottles and a full-container message" loading="lazy"><figcaption>The TFT counts each container and asks staff to empty a full one.</figcaption></figure><figure><img src="img/qc-esp32.jpg" alt="ESP32 DevKit wired to the ILI9341 TFT display on a breadboard" loading="lazy"><figcaption>ESP32 DevKit driving the 320 × 240 TFT.</figcaption></figure><figure><img src="img/qc-camera.jpg" alt="Pi camera mounted on the Raspberry Pi 4 case" loading="lazy"><figcaption>The Pi camera on the Raspberry Pi 4.</figcaption></figure><figure><img src="img/qc-enclosure.jpg" alt="Fusion 360 model of the snap-fit display enclosure" loading="lazy"><figcaption>The snap-fit enclosure for the display.</figcaption></figure></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEMO ============ -->
+<section id="demo">
+  <div class="wrap">
+    <p class="kicker reveal">04 — Demo</p>
+    <h2 class="reveal">Watch the line sort</h2>
+    <div class="demo reveal">
+      <div class="player" id="player">
+        <video id="demoVid" src="visor-demo-week8.mp4" poster="visor-demo-poster.jpg" muted playsinline preload="metadata"></video>
+        <button class="play" id="playBtn" aria-label="Play the week 8 demo video"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+      </div>
+      <ul class="targets">
+        <li><b>6 / 8</b><span>items in the correct bin, minimum pass mark</span></li>
+        <li><b>≤ 500 ms</b><span>from image capture to target coordinates</span></li>
+        <li><b>≤ $600</b><span>total prototype budget (CAD)</span></li>
+      </ul>
+    </div>
+    <p class="vcap reveal">Week 8 test: the SO-ARM101 picks an aluminium can from the conveyor and drops it into the correct bin.</p>
+  </div>
+</section>
+
+<!-- ============ TIMELINE ============ -->
+<section class="band" id="journey">
+  <div class="wrap">
+    <p class="kicker reveal">05 — Our progress</p>
+    <h2 class="reveal">From kit to sorting line</h2>
+    <ol class="timeline">
+      <li class="reveal"><time>Week 3</time><p>Two SO-ARM101 arms arrive; leader–follower teleoperation runs the same week.</p></li>
+      <li class="reveal"><time>Week 5</time><p>The follower arm completes its first autonomous moves from recorded episodes.</p></li>
+      <li class="reveal"><time>Week 6</time><p>YOLO detection is complete; the arm moves to a Pi 5 with an AI HAT; the TFT shows live video from the Pi 4.</p></li>
+      <li class="reveal"><time>Week 7</time><p>First full integration with the conveyor; the PCB is designed and ordered.</p></li>
+      <li class="reveal"><time>Week 8</time><p>The snap-fit enclosure for the quality-control display is designed and tested.</p></li>
+      <li class="reveal"><time>Nov 2026</time><p>A gripper guard ends servo overloads; work continues on the MQTT link and a redesigned gripper.</p></li>
+      <li class="reveal now"><time>Dec 18</time><p>Live demonstration at the Camosun Capstone Symposium.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ TEAM ============ -->
+<section id="team">
+  <div class="wrap">
+    <p class="kicker reveal">06 — The team</p>
+    <h2 class="reveal">The people behind the arm</h2>
+    <figure class="group reveal">
+      <img src="team-group.jpg" alt="The V.I.S.O.R. team standing on campus: Dileesh Chandran, Martin Quijano and Chan Tran" loading="lazy">
+      <figcaption>Left to right: Dileesh Chandran, Martin Quijano and Chan Tran.</figcaption>
+    </figure>
+    <div class="team">
+      <article class="member reveal">
+        <div class="photo has"><img src="team-martin.jpg" alt="Portrait of Martin Quijano" loading="lazy"></div>
+        <h3>Martin Quijano</h3>
+        <p class="role">PLC automation &amp; documentation</p>
+        <p>Martin programs the Allen-Bradley PLC and the PowerFlex 527 that run the conveyor, builds the MQTT link to the arm, and leads the team's documentation.</p>
+        <a class="lnk-in" href="#contact">LinkedIn →</a>
+      </article>
+      <article class="member reveal">
+        <div class="photo has"><img src="team-chan.jpg" alt="Portrait of Chan Tran" loading="lazy"></div>
+        <h3>Chan Tran</h3>
+        <p class="role">IoT design &amp; smart receptacles</p>
+        <p>Chan builds the quality-control station: the Pi 4 camera and its detection model, the ESP32 TFT display, the custom PCB and the snap-fit enclosure.</p>
+        <a class="lnk-in" href="#contact">LinkedIn →</a>
+      </article>
+      <article class="member reveal">
+        <div class="photo has"><img src="team-dileesh.jpg" alt="Portrait of Dileesh Chandran" loading="lazy"></div>
+        <h3>Dileesh Chandran</h3>
+        <p class="role">SO-101 training &amp; object detection</p>
+        <p>Dileesh builds and trains the SO-ARM101 and integrates object detection: YOLO on the Raspberry Pi 5, ACT imitation learning in <em>LeRobot</em>, and the arm's control software.</p>
+        <a class="lnk-in" href="#contact">LinkedIn →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DOCUMENTS ============ -->
+<section class="band" id="docs">
+  <div class="wrap">
+    <p class="kicker reveal">07 — Documents &amp; code</p>
+    <h2 class="reveal">Read the full story</h2>
+    <div class="docs">
+      <a class="doc reveal" href="#docs" data-todo="Link the Proposal PDF"><span class="ext">PDF</span><b>Project Proposal</b><small>Scope, requirements and budget</small></a>
+      <a class="doc reveal" href="VISOR_Progress_Report.pdf" target="_blank" rel="noopener"><span class="ext">PDF · 14 pages</span><b>Progress Report</b><small>Status memo, September 2026</small></a>
+      <a class="doc reveal" href="#docs" data-todo="Link the Formal Report PDF"><span class="ext">PDF</span><b>Formal Report</b><small>Design, testing and results</small></a>
+      <a class="doc reveal" href="VISOR_Progress_Presentation_Week9.pdf" target="_blank" rel="noopener"><span class="ext">PDF · 13 slides</span><b>Progress Presentation</b><small>Week 9 slides</small></a>
+      <a class="doc reveal feature" href="VISOR_User_Manual.pdf" target="_blank" rel="noopener"><span class="ext">PDF · 15 pages</span><b>User Manual</b><small>Set up, run and stop the sorting line</small></a>
+      <a class="doc reveal code" href="https://github.com/DC-C0526799/VISOR-Arm" target="_blank" rel="noopener"><span class="ext">GIT</span><b>GitHub repository</b><small>DC-C0526799/VISOR-Arm</small></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ USER MANUAL ============ -->
+<section id="manual">
+  <div class="wrap two">
+    <div class="reveal">
+      <p class="kicker">08 — User manual</p>
+      <h2>Run the line, step by step</h2>
+      <p>Our 15-page manual walks an operator through safe set-up, start-up, sorting and shutdown, with numbered steps, ten figures and a troubleshooting table.</p>
+      <a class="btn primary" href="VISOR_User_Manual.pdf" target="_blank" rel="noopener">Download the manual (PDF)</a>
+    </div>
+    <div class="manual reveal">
+      <div class="mhead"><span>V.I.S.O.R. User Manual</span><span>Contents</span></div>
+      <ol>
+        <li><b>Introduction</b><span>What V.I.S.O.R. does and what you need</span><em class="pg">3</em></li>
+        <li><b>Safety</b><span>Stops, work area and gripper guard</span><em class="pg">5</em></li>
+        <li><b>Set up the workstation</b><span>Cart, arm, bins and network</span><em class="pg">6</em></li>
+        <li><b>Start the system</b><span>Conveyor, quality control, then arm</span><em class="pg">7</em></li>
+        <li><b>Run the sorting line</b><span>Single-item test, then continuous sorting</span><em class="pg">9</em></li>
+        <li><b>Read the quality-control display</b><span>Counts, full containers and resets</span><em class="pg">11</em></li>
+        <li><b>Stop and shut down</b><span>Normal stop and emergency stop</span><em class="pg">12</em></li>
+        <li><b>Troubleshooting</b><span>Common faults and fixes</span><em class="pg">13</em></li>
+        <li><b>Care and maintenance</b><span>Cameras, gripper and calibration</span><em class="pg">14</em></li>
+        <li><b>Conclusion and support</b><span>Team contacts and code</span><em class="pg">15</em></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THANKS + CONTACT ============ -->
+<section class="band closing" id="contact">
+  <div class="wrap two">
+    <div class="reveal">
+      <p class="kicker">09 — Thank you</p>
+      <h2>Built with support from Camosun College</h2>
+      <p>We thank the Camosun College ECET department and our instructors <b>Mel Dundas</b>, <b>Wayne Mayes</b> and <b>Justin Curran</b> for their guidance, design reviews and lab equipment, including the conveyor, PLC and PowerFlex drive that make our line possible.</p>
+      <p class="optimist">We built V.I.S.O.R. to show that automated sorting can start small. We look forward to seeing it grow into a tool that helps more communities recycle more.</p>
+    </div>
+    <form class="contact reveal" id="contactForm">
+      <h3>Talk to the team</h3>
+      <p>Questions, collaboration or a visit at the symposium? Send us a note.</p>
+      <label>Name<input name="name" required autocomplete="name"></label>
+      <label>Email<input name="email" type="email" required autocomplete="email"></label>
+      <label>Message<textarea name="msg" rows="4" required></textarea></label>
+      <button class="btn primary" type="submit">Send message</button>
+      <p class="form-note" id="formNote" role="status"></p>
+      <p class="mail">Team email: <span>add team email here</span></p>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap footrow">
+    <span>V.I.S.O.R<b>.</b> · ECET Capstone 2026 · Camosun College, Victoria BC</span>
+    <span><a href="https://github.com/DC-C0526799/VISOR-Arm" target="_blank" rel="noopener">GitHub</a> · <a href="#top">Back to top ↑</a></span>
+  </div>
+</footer>
+
+<!-- Rubric map: a planning aid for the team, not part of the final site -->
+<button class="rubric-btn" id="rubricBtn" aria-expanded="false">Rubric map</button>
+<aside class="rubric" id="rubric" hidden>
+  <h4>ENGL 273 rubric → this page</h4>
+  <ul>
+    <li><b>Opening 5%</b><a href="#top">Hero</a> + <a href="#intro">intro</a>: team, name, background, Camosun</li>
+    <li><b>Details 30%</b><a href="#how">How it works</a>, <a href="#system">System</a>, <a href="#demo">Demo</a>, <a href="#team">Team photos</a>, <a href="#docs">Docs + GitHub</a></li>
+    <li><b>User manual 20%</b><a href="#manual">Manual preview</a> + 15-page PDF (linked)</li>
+    <li><b>Design 30%</b>Sticky nav, short sections, parallel headings, contact info, tested links</li>
+    <li><b>Closing 5%</b><a href="#contact">Thanks</a>, call to action, optimistic statement</li>
+  </ul>
+  <p>Still to link: Proposal and Formal Report PDFs, team email, LinkedIn.</p>
+</aside>
+
+
+
+<script>
+(() => {
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  const hero=$('#hero'), bar=$('#topbar');
+  setTimeout(()=>hero.classList.add('open','show'),300);
+  // top bar: slides in once the hero has revealed its title, turns solid after the hero
+  const tick=()=>{ if(hero.classList.contains('show')||scrollY>40) bar.classList.add('on');
+    bar.classList.toggle('solid',scrollY>innerHeight*0.6); };
+  addEventListener('scroll',tick,{passive:true}); setInterval(tick,400);
+  // mobile menu
+  const menu=$('#menu'), burger=$('#burger');
+  burger.addEventListener('click',()=>{const o=menu.classList.toggle('open');burger.setAttribute('aria-expanded',o);});
+  $$('#menu a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('open');burger.setAttribute('aria-expanded',false);}));
+  // active section in menu
+  const links=$$('#menu a[href^="#"]');
+  const secObs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ links.forEach(l=>l.classList.toggle('act',l.getAttribute('href')==='#'+e.target.id)); } }),{rootMargin:'-45% 0px -50% 0px'});
+  $$('main section[id]').forEach(s=>secObs.observe(s));
+  // reveal on scroll
+  const rObs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); rObs.unobserve(e.target);} }),{rootMargin:'0px 0px -8% 0px'});
+  $$('.reveal').forEach((el,i)=>{ el.style.transitionDelay=((i%4)*0.08)+'s'; rObs.observe(el); });
+  // tabs
+  $$('.tablist button').forEach(b=>b.addEventListener('click',()=>{
+    $$('.tablist button').forEach(x=>x.setAttribute('aria-selected',x===b));
+    $$('.panel').forEach(p=>p.hidden=p.dataset.panel!==b.dataset.tab);
+  }));
+  // demo player (placeholder clip = the hero animation)
+  const vid=$('#demoVid'), player=$('#player');
+  $('#playBtn').addEventListener('click',()=>{ vid.controls=true; vid.play().then(()=>player.classList.add('playing')).catch(()=>{}); });
+  vid.addEventListener('ended',()=>{ player.classList.remove('playing'); });
+  // links the team still has to fill in
+  $$('[data-todo]').forEach(a=>a.addEventListener('click',e=>{ if(a.getAttribute('href').startsWith('#')&&a.dataset.todo){ e.preventDefault(); toast(a.dataset.todo+' here.'); } }));
+  // contact form (Wix's own form element will send real messages)
+  $('#contactForm').addEventListener('submit',e=>{ e.preventDefault(); $('#formNote').textContent='Preview only: on the Wix site this form will email the team.'; e.target.reset(); });
+  // rubric map
+  const rb=$('#rubricBtn'), rp=$('#rubric');
+  rb.addEventListener('click',()=>{ rp.hidden=!rp.hidden; rb.setAttribute('aria-expanded',!rp.hidden); });
+  function toast(msg){ let t=$('#toast'); if(!t){ t=document.createElement('div'); t.id='toast';
+      t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40;background:#ffb25b;color:#1b1206;font:12px/1.4 var(--mono);letter-spacing:.06em;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:opacity .3s';
+      document.body.appendChild(t);} t.textContent=msg; t.style.opacity=1; clearTimeout(t._h); t._h=setTimeout(()=>t.style.opacity=0,2400); }
+})();
+</script>
+
+</body>
+</html>
