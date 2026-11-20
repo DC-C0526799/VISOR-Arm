@@ -1,0 +1,32 @@
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;height:100%;background:transparent;overflow:hidden}
+  body{display:grid;place-items:center}
+  .ring{--p:0;width:min(96vw,96vh);aspect-ratio:1;border-radius:50%;position:relative;display:grid;place-items:center;
+        background:conic-gradient(#3EE6D2 calc(var(--p)*1%),rgba(233,238,242,.08) 0)}
+  .ring::before{content:"";position:absolute;inset:10px;border-radius:50%;background:#080D12}
+  .ring span{position:relative;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:700;color:#E9EEF2;
+             font-size:min(26vw,26vh);letter-spacing:-.03em}
+  .ring small{font-size:.45em;color:#3EE6D2;margin-left:2px}
+</style>
+<div class="ring" id="ring" role="img" aria-label="78.5 percent">
+  <span><b id="num">0</b><small>%</small></span>
+</div>
+<script>
+  const TARGET = 78.5, DURATION = 1800;
+  const ring = document.getElementById('ring'), num = document.getElementById('num');
+  let done = false;
+  function play() {
+    if (done) return; done = true;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { ring.style.setProperty('--p', TARGET); num.textContent = TARGET.toFixed(1); return; }
+    const start = performance.now();
+    function frame(now) {
+      const t = Math.min(1, (now - start) / DURATION), ease = 1 - Math.pow(1 - t, 3), v = TARGET * ease;
+      ring.style.setProperty('--p', v);
+      num.textContent = v.toFixed(1);
+      if (t < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  new IntersectionObserver(e => { if (e.some(x => x.isIntersecting)) play(); }, { threshold: 0.4 }).observe(ring);
+</script>
